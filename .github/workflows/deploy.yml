@@ -27,7 +27,7 @@ jobs:
             git pull origin main
             npm install
             npm run build
-            sudo rm -rf /var/www/html/*
-            sudo mv dist/* /var/www/html/
-            sudo systemctl restart apache2
+            rm -rf /var/www/html/*
+            mv dist/* /var/www/html/
+            systemctl restart apache2
           EOF
