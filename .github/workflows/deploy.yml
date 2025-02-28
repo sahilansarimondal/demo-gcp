@@ -23,6 +23,7 @@ jobs:
       - name: Deploy to GCP VM
         run: |
           ssh -i ~/.ssh/id_rsa mondalrajesh761@34.131.131.230 << 'EOF'
+          export PATH=$HOME/.nvm/versions/node/v20.18.3/bin:$HOME/.local/bin:$PATH  # Adjust if needed
             cd /home/mondalrajesh761/demo-gcp
             git pull origin main
             npm install
