@@ -1,0 +1,33 @@
+name: Deploy to GCP VM
+
+on:
+  push:
+    branches:
+      - main # Runs on every push to the main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H 34.131.131.230 >> ~/.ssh/known_hosts
+
+      - name: Deploy to GCP VM
+        run: |
+          ssh -i ~/.ssh/id_rsa mondalrajesh761@34.131.131.230 << 'EOF'
+            cd /home/mondalrajesh761/demo-gcp
+            git pull origin main
+            pnpm install
+            pnpm run build
+            sudo rm -rf /var/www/html/*
+            sudo mv dist/* /var/www/html/
+            sudo systemctl restart apache2
+          EOF
