@@ -25,8 +25,8 @@ jobs:
           ssh -i ~/.ssh/id_rsa mondalrajesh761@34.131.131.230 << 'EOF'
             cd /home/mondalrajesh761/demo-gcp
             git pull origin main
-            pnpm install
-            pnpm run build
+            npm install
+            npm run build
             sudo rm -rf /var/www/html/*
             sudo mv dist/* /var/www/html/
             sudo systemctl restart apache2
