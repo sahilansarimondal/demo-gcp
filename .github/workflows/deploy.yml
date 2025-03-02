@@ -3,7 +3,7 @@ name: Deploy to Google Cloud VM
 on:
   push:
     branches:
-      - main # Runs on push to main branch
+      - main
 
 jobs:
   deploy:
@@ -17,10 +17,18 @@ jobs:
         run: |
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > private_key
           chmod 600 private_key
-          ssh -o StrictHostKeyChecking=no -i private_key macbook@34.131.106.109 << 'EOF'
-            cd /var/www/html
+          ssh -o StrictHostKeyChecking=no -i private_key YOUR_USERNAME@YOUR_VM_IP << 'EOF'
+            cd ~/demo-gcp
             git pull origin main
+
+            # Install dependencies and build the project
             npm install
             npm run build
+
+            # Copy the build output to /var/www/html
+            sudo rm -rf /var/www/html/*
+            sudo cp -r dist/* /var/www/html/
+
+            # Restart Apache
             sudo systemctl restart apache2
           EOF
