@@ -22,8 +22,8 @@ jobs:
             git pull origin main
 
             # Install dependencies and build the project
-            npm install
-            npm run build
+            pnpm install
+            pnpm run build
 
             # Copy the build output to /var/www/html
             sudo rm -rf /var/www/html/*
