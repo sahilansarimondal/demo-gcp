@@ -1,34 +1,26 @@
-name: Deploy to GCP VM
+name: Deploy to Google Cloud VM
 
 on:
   push:
     branches:
-      - main # Runs on every push to the main branch
+      - main # Runs on push to main branch
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Set up SSH Key
+      - name: Setup SSH and Deploy
         run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H 34.131.131.230 >> ~/.ssh/known_hosts
-
-      - name: Deploy to GCP VM
-        run: |
-          ssh -i ~/.ssh/id_rsa mondalrajesh761@34.131.131.230 << 'EOF'
-          export PATH=$HOME/.nvm/versions/node/v20.18.3/bin:$HOME/.local/bin:$PATH  # Adjust if needed
-            cd /home/mondalrajesh761/demo-gcp
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > private_key
+          chmod 600 private_key
+          ssh -o StrictHostKeyChecking=no -i private_key macbook@34.131.106.109 << 'EOF'
+            cd /var/www/html
             git pull origin main
             npm install
             npm run build
-            rm -rf /var/www/html/*
-            mv dist/* /var/www/html/
             sudo systemctl restart apache2
           EOF
